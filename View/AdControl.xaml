@@ -1,0 +1,19 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone" x:Class="FreeApp.View.AdControl"
+    xmlns:Ads="clr-namespace:Microsoft.Advertising.Mobile.UI;assembly=Microsoft.Advertising.Mobile.UI"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    d:DesignHeight="80" d:DesignWidth="480">
+
+    <Grid x:Name="LayoutRoot" >
+        <Ads:AdControl Name="adControl" IsBackgroundTransparent="True" AdUnitId="11394750" 
+              ApplicationId="e920e3b6-3c2c-4484-b5d9-bdaf14c55a90" 
+              Width="480" Height="80" ErrorOccurred="adControl_ErrorOccurred" IsAutoRefreshEnabled="True" />
+    </Grid>
+</UserControl>
