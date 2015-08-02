@@ -23,6 +23,7 @@ namespace FreeApp
         public static string mess;
         public static string url;
         public static string title;
+        public static List<Ads> listAds = new List<Ads>();
         /// <summary>
         /// A static ViewModel used by the views to bind against.
         /// </summary>

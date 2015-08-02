@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="2880QuyenUIT.MovieFree" Publisher="CN=99982F1D-6D27-4614-B6E2-FF26735BEC26" Version="9.0.0.0" />
+  <Identity Name="2880QuyenUIT.MovieFree" Publisher="CN=99982F1D-6D27-4614-B6E2-FF26735BEC26" Version="9.0.0.2" />
   <mp:PhoneIdentity PhoneProductId="71586ede-486b-4275-a444-451ae6040a0e" PhonePublisherId="4efe42c0-a079-4123-ad85-a3d08818264f" />
   <Properties>
     <DisplayName>Movie Free</DisplayName>
@@ -32,6 +32,7 @@
   </Applications>
   <Capabilities>
     <Capability Name="internetClientServer" />
+    <DeviceCapability Name="proximity" />
   </Capabilities>
   <Extensions>
     <Extension Category="windows.activatableClass.inProcessServer">

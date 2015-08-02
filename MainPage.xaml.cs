@@ -60,19 +60,19 @@ namespace FreeApp
             base.OnBackKeyPress(e);
             base.OnBackKeyPress(e);
             this.flag = this.flag + 1;
-            if (this.flag < (this.listAds.Count + 1) && this.listAds.Count != 0)
+            if (this.flag < (App.listAds.Count + 1) && App.listAds.Count != 0)
             {
                 var toast = new ToastPrompt
                 {
                     IsAppBarVisible = false,
                     Background = _aliceBlueSolidColorBrush,
                     Foreground = _cornFlowerBlueSolidColorBrush,
-                    Title = this.listAds[this.flag - 1].Title,
-                    Message = this.listAds[this.flag - 1].Message,
+                    Title = App.listAds[this.flag - 1].Title,
+                    Message = App.listAds[this.flag - 1].Message,
                     FontSize = 20,
                     TextOrientation = System.Windows.Controls.Orientation.Vertical,
                     ImageSource =
-                        new BitmapImage(new Uri(this.listAds[this.flag - 1].Image, UriKind.RelativeOrAbsolute))
+                        new BitmapImage(new Uri(App.listAds[this.flag - 1].Image, UriKind.RelativeOrAbsolute))
                 };
                 toast.MillisecondsUntilHidden = 7000;
                 toast.Tap += toasts_Tap;
@@ -80,7 +80,7 @@ namespace FreeApp
                 var t = new ToastPrompt
                 {
                     Title = "warning",
-                    Message = string.Format("Press BACK {0} times again to Exit!", (this.listAds.Count + 1 - this.flag)),
+                    Message = string.Format("Press BACK {0} times again to Exit!", (App.listAds.Count + 1 - this.flag)),
                 };
                 t.Show();
                 e.Cancel = true;
@@ -94,10 +94,10 @@ namespace FreeApp
         {
             try
             {
-                this.listAds.Clear();
+                App.listAds.Clear();
                 string html = "";
                 var client = new HttpClient();
-                html = await client.GetStringAsync("http://lucstudio.cloudapp.net/Ads.xml");
+                html = await client.GetStringAsync("http://lucstudio.com/Ads.xml");
                 MatchCollection Resultss = Regex.Matches(html.ToString(), "<App>(.*)");
                 foreach (Match result in Resultss)
                 {
@@ -105,7 +105,7 @@ namespace FreeApp
                     string _name = UIHelper.GetTxtBtwn(result.ToString(), "<name>", "</name>", 0);
                     string _image = UIHelper.GetTxtBtwn(result.ToString(), "<image>", "</image>", 0);
                     string _version = UIHelper.GetTxtBtwn(result.ToString(), "<message>", "</message", 0);
-                    this.listAds.Add(new Ads() { Image = _image, Message = _version, Title = _name, Url = _url });
+                    App.listAds.Add(new Ads() { Image = _image, Message = _version, Title = _name, Url = _url });
                 }
             }
             catch
@@ -115,7 +115,7 @@ namespace FreeApp
         {
             WebBrowserTask webBrowserTask = new WebBrowserTask();
 
-            webBrowserTask.Uri = new Uri(this.listAds[this.flag - 1].Url, UriKind.Absolute);
+            webBrowserTask.Uri = new Uri(App.listAds[this.flag - 1].Url, UriKind.Absolute);
 
             webBrowserTask.Show();
         }
@@ -310,7 +310,7 @@ namespace FreeApp
             var about = new AboutPrompt();
             about.Completed += PopUpPromptObjectCompleted;
 
-            about.Show("Vl Studio.", "Sorry I dont use ! ", "x@banh.us", "http://lucstudio.com.com");
+            about.Show("Vl Studio.", "Sorry I dont use ! ", "x@banh.us", "http://lucstudio.com");
         }
 
         private void PopUpPromptObjectCompleted(object sender, PopUpEventArgs<object, PopUpResult> e)
