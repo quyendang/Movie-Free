@@ -9,6 +9,9 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Diagnostics;
 
+using System.Threading.Tasks;
+using System.Windows.Threading;
+
 namespace FreeApp.View
 {
     public partial class AdControl : UserControl
@@ -16,11 +19,23 @@ namespace FreeApp.View
         public AdControl()
         {
             InitializeComponent();
+            
         }
 
         private void adControl_ErrorOccurred(object sender, Microsoft.Advertising.AdErrorEventArgs e)
         {
-            Debug.WriteLine(e.Error.ToString());            
+           // adControl2.Refresh();
+           // MessageBox.Show(e.Error.Message);
+            adControl.Visibility = System.Windows.Visibility.Collapsed;
+            adControl2.Visibility = System.Windows.Visibility.Visible;
         }
+
+        private void adControl2_ErrorOccurred(object sender, Microsoft.Advertising.AdErrorEventArgs e)
+        {
+            
+            adControl.Visibility = System.Windows.Visibility.Visible;
+            adControl2.Visibility = System.Windows.Visibility.Collapsed;
+        }
+
     }
 }

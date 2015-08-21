@@ -98,10 +98,6 @@
     <Compile Include="BackgroundTransferList.xaml.cs">
       <DependentUpon>BackgroundTransferList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Chat.xaml.cs">
-      <DependentUpon>Chat.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Connect\SocketConnect.cs" />
     <Compile Include="Fa.xaml.cs">
       <DependentUpon>Fa.xaml</DependentUpon>
     </Compile>
@@ -125,6 +121,7 @@
       <DependentUpon>Search.xaml</DependentUpon>
     </Compile>
     <Compile Include="TemplateSelector.cs" />
+    <Compile Include="TiltEffect.cs" />
     <Compile Include="Utils\BooleanToVisibilityConverter.cs" />
     <Compile Include="Utils\ChannelNameConverter.cs" />
     <Compile Include="Utils\DurationMillisecondsConverter.cs" />
@@ -145,6 +142,9 @@
     <Compile Include="View\ProgressRing.xaml.cs">
       <DependentUpon>ProgressRing.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowsPhoneControl1.xaml.cs">
+      <DependentUpon>WindowsPhoneControl1.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -152,10 +152,6 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="BackgroundTransferList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Chat.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -195,6 +191,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="WindowsPhoneControl1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -202,6 +202,9 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <None Include="analytics.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Assets\Images\Thumbs.db" />
     <None Include="Assets\menu\Thumbs.db" />
     <None Include="Assets\player\Thumbs.db" />
@@ -213,6 +216,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="analytics.xml" />
+    <Content Include="Assets\poster.medium.jpg" />
+    <Content Include="Assets\Ringtones.jpg" />
     <Content Include="README_FIRST.txt" />
     <Content Include="SplashScreenImage.jpg" />
     <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
@@ -353,8 +359,11 @@
     <Reference Include="Coding4Fun.Toolkit.Controls">
       <HintPath>packages\Coding4Fun.Toolkit.Controls.2.0.9\lib\windowsphone8\Coding4Fun.Toolkit.Controls.dll</HintPath>
     </Reference>
-    <Reference Include="EngineIoClientDotNet">
-      <HintPath>packages\EngineIoClientDotNet.0.9.18\lib\windowsphone8\EngineIoClientDotNet.dll</HintPath>
+    <Reference Include="GoogleAnalytics">
+      <HintPath>packages\GoogleAnalyticsSDK.1.3.00\lib\windowsphone8\GoogleAnalytics.dll</HintPath>
+    </Reference>
+    <Reference Include="GoogleAnalytics.Core">
+      <HintPath>packages\GoogleAnalyticsSDK.1.3.00\lib\windowsphone8\GoogleAnalytics.Core.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\..\..\..\..\Desktop\HtmlAgilityPack.dll</HintPath>
@@ -362,12 +371,6 @@
     <Reference Include="Microsoft.Phone.Controls.Maps, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SocketIoClientDotNet">
-      <HintPath>packages\SocketIoClientDotNet.0.9.11\lib\windowsphone8\SocketIoClientDotNet.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http">
       <HintPath>packages\Microsoft.Net.Http.2.2.29\lib\sl4-windowsphone71\System.Net.Http.dll</HintPath>
@@ -397,9 +400,6 @@
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Telerik\RadControls for Windows Phone 8 Q3 2013\Binaries\WindowsPhone\Telerik.Windows.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="WebSocket4Net">
-      <HintPath>packages\WebSocket4Net.0.12\lib\sl40-windowsphone71\WebSocket4Net.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <SDKReference Include="Microsoft.Advertising, Version=8.1">
@@ -408,6 +408,12 @@
     <SDKReference Include="Microsoft.PlayerFramework.WP8.Core, Version=2.0.0.0">
       <Name>Microsoft Player Framework</Name>
     </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ScheduledTaskAgent1\ScheduledTaskAgent1.csproj">
+      <Project>{95ef70cf-b24e-4b30-b49a-07a5c489f0cf}</Project>
+      <Name>ScheduledTaskAgent1</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

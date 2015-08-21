@@ -8,16 +8,38 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     xmlns:Progress="clr-namespace:FreeApp.View"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives" 
     xmlns:telerikInput="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Input" 
+    xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="False">
+    <toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideLeftFadeIn" />
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideLeftFadeIn" />
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideUpFadeOut" />
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeOut" />
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="DataTemplate1">
-            <Grid Height="220" Width="200" Background="Transparent" Margin="0,0,20,20">
+            <Grid toolkit:TiltEffect.IsTiltEnabled="True" Height="220" Width="200" Background="Transparent" Margin="0,0,20,20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="190"/>
                     <RowDefinition Height="20"/>
@@ -34,7 +56,7 @@
 
         <DataTemplate x:Key="DataTemplate3">
             <Grid>
-                <TextBlock Text="{Binding Title}" HorizontalAlignment="Left" VerticalAlignment="Top"  FontWeight="Bold" FontSize="25" />
+                <TextBlock Text="{Binding Title}" HorizontalAlignment="Left" Foreground="{StaticResource PhoneAccentBrush}" VerticalAlignment="Top"  FontWeight="Bold" FontSize="50" />
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="DataTemplate4">
@@ -56,23 +78,25 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,10,0,0">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Name="pageName" Text="TV Series" Style="{StaticResource PhoneTextNormalStyle}"/>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <telerikInput:RadListPicker Grid.Column="0" Margin="0,0,0,0" x:Name="listparkCountryCategories2" VerticalAlignment="Stretch"  Background="{x:Null}" BorderBrush="{x:Null}"  ItemTemplate="{StaticResource DataTemplate3}" PopupItemTemplate="{StaticResource DataTemplate4}" InlineModeThreshold="1"  FontSize="40" SelectionChanged="listparkCountryCategories2_SelectionChanged" Template="{StaticResource listpacktemp}" />
-                    <Border Grid.Column="1" BorderThickness="0,2,0,0" BorderBrush="{StaticResource PhoneBorderBrush}" Margin="0,40,0,10"/>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Name="pageName" Text="TV Series" Style="{StaticResource PhoneTextNormalStyle}"/>
+                <Grid Grid.Column="1">
+                    <telerikInput:RadListPicker Margin="0,-15,0,0" x:Name="listparkCountryCategories2" VerticalAlignment="Top"  Background="{x:Null}" BorderBrush="{x:Null}"  ItemTemplate="{StaticResource DataTemplate3}" PopupItemTemplate="{StaticResource DataTemplate4}" InlineModeThreshold="1"  FontSize="40" SelectionChanged="listparkCountryCategories2_SelectionChanged" Template="{StaticResource listpacktemp}" HorizontalAlignment="Left" />
                 </Grid>
             </Grid>
         </StackPanel>
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,80">
             <telerikPrimitives:RadDataBoundListBox ItemsSource="{Binding Items}" ItemTap="MovieListBox_ItemTap"  DataRequested="MovieListBox_DataRequested" x:Name="MovieListBox" DataVirtualizationMode="OnDemandAutomatic" ItemTemplate="{StaticResource DataTemplate1}" EmptyContent="no video avalible">
+                <telerikPrimitives:RadDataBoundListBox.ItemAddedAnimation>
+                    <telerikCore:RadScaleAndFadeAnimation Duration="0:0:2">
+                        <telerikCore:RadScaleAndFadeAnimation.Easing>
+                            <CircleEase EasingMode="EaseIn"/>
+                        </telerikCore:RadScaleAndFadeAnimation.Easing>
+                    </telerikCore:RadScaleAndFadeAnimation>
+                </telerikPrimitives:RadDataBoundListBox.ItemAddedAnimation>
                 <telerikPrimitives:RadDataBoundListBox.ItemLoadingTemplate>
                     <DataTemplate>
                         <StackPanel MinHeight="14" Orientation="Horizontal">
@@ -83,6 +107,7 @@
                 </telerikPrimitives:RadDataBoundListBox.ItemLoadingTemplate>
             </telerikPrimitives:RadDataBoundListBox>
         </Grid>
+        <Progress:ProgressRing Grid.Row="1" IsActive="{Binding IsLoading}" HorizontalAlignment="Center" Height="50" Width="50" Foreground="{StaticResource PhoneAccentBrush}"/>
         <Progress:AdControl Grid.Row="1" VerticalAlignment="Bottom"/>
     </Grid>
 

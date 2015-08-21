@@ -15,5 +15,8 @@
         <Ads:AdControl Name="adControl" IsBackgroundTransparent="True" AdUnitId="11394750" 
               ApplicationId="e920e3b6-3c2c-4484-b5d9-bdaf14c55a90" 
               Width="480" Height="80" ErrorOccurred="adControl_ErrorOccurred" IsAutoRefreshEnabled="True" />
+        <Ads:AdControl Visibility="Collapsed" Name="adControl2" IsBackgroundTransparent="True" AdUnitId="11394749" 
+              ApplicationId="e920e3b6-3c2c-4484-b5d9-bdaf14c55a90" 
+              Width="480" Height="80" ErrorOccurred="adControl2_ErrorOccurred" />
     </Grid>
 </UserControl>

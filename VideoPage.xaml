@@ -6,16 +6,37 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:Progress="clr-namespace:FreeApp.View"
+    xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:c4f="clr-namespace:Coding4Fun.Toolkit.Controls;assembly=Coding4Fun.Toolkit.Controls"
     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives" 
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Landscape"
+    SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="False">
-
+    <toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideLeftFadeIn" />
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideLeftFadeIn" />
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideUpFadeOut" />
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeOut" />
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot">
         <!--<Grid.Background>
@@ -70,14 +91,14 @@
                     <ListBox Grid.Row="2" ItemsSource="{Binding EpisodeItems}" SelectionChanged="espiList_SelectionChanged" Name="espiList">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border Padding="0, 10, 0, 8" BorderThickness="0, 0, 0, 1" BorderBrush="Gray" Width="480">
+                                <Border toolkit:TiltEffect.IsTiltEnabled="True" Padding="0, 10, 0, 8" BorderThickness="0, 0, 0, 1" BorderBrush="Gray" Width="480">
                                     <Grid Width="480">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="4*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Margin="0,0,0,10">
-                                            <TextBlock  Text="{Binding Title}" FontSize="30" TextWrapping="Wrap" FontFamily="Segoe WP Light"/>
+                                            <TextBlock Text="{Binding Title}" FontSize="30" TextWrapping="Wrap" FontFamily="Segoe WP Light"/>
                                         </StackPanel>
                                         <Button x:Name="download_btn" Click="download_btn_Click" HorizontalAlignment="Left" Style="{StaticResource SubscribeUncheckedDark3}" VerticalAlignment="Center" Height="45" Width="45" Grid.Column="1"/>
                                     </Grid>
@@ -91,7 +112,7 @@
                 <telerikPrimitives:RadDataBoundListBox ItemTap="MovieListBox_ItemTap" Name="MovieListBox" ItemsSource="{Binding RelatedItems}">
                     <telerikPrimitives:RadDataBoundListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Height="220" Width="200" Background="Transparent" Margin="0,0,20,20">
+                            <Grid toolkit:TiltEffect.IsTiltEnabled="True" Height="220" Width="200" Background="Transparent" Margin="0,0,20,20">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="190"/>
                                     <RowDefinition Height="20"/>
@@ -109,6 +130,7 @@
                 </telerikPrimitives:RadDataBoundListBox>
             </phone:PivotItem>
         </phone:Pivot>
+        <Progress:ProgressRing Grid.Row="1" IsActive="{Binding IsLoading}" HorizontalAlignment="Center" Height="50" Width="50" Foreground="{StaticResource PhoneAccentBrush}"/>
         <Progress:AdControl Grid.Row="1" VerticalAlignment="Bottom"/>
     </Grid>
 </phone:PhoneApplicationPage>

@@ -20,6 +20,11 @@ using System.Windows.Media.Imaging;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using FreeApp.Utils;
+using System.Windows.Media.Animation;
+using Microsoft.Phone.Scheduler;
+using System.Threading;
+using System.IO.IsolatedStorage;
+using System.Diagnostics;
 
 namespace FreeApp
 {
@@ -52,9 +57,120 @@ namespace FreeApp
             this.LstBxCategories.ItemsSource = (IEnumerable)App.ViewModel.ReleasedCountry;
             this.LstBxYear.ItemsSource = (IEnumerable)App.ViewModel.ReleasedYear;
             this.GenreListBox.ItemsSource = (IEnumerable)App.ViewModel.MovieCategorys;
-            App.sk.connectSocket();
+           // App.sk.connectSocket();
+            
 
         }
+        private void StartPeriodicTask()
+        {
+            PeriodicTask periodicTask = new PeriodicTask("PeriodicTaskDemo");
+            periodicTask.Description = "Are presenting a periodic task";
+            try
+            {
+                ScheduledActionService.Add(periodicTask);
+                //ScheduledActionService.LaunchForTest("PeriodicTaskDemo", TimeSpan.FromSeconds(3));
+               // MessageBox.Show("Open the background agent success");
+            }
+            catch (InvalidOperationException exception)
+            {
+                if (exception.Message.Contains("exists already"))
+                {
+                    //MessageBox.Show("Since then the background agent success is already running");
+                }
+                if (exception.Message.Contains("BNS Error: The action is disabled"))
+                {
+                   // MessageBox.Show("Background processes for this application has been prohibited");
+                }
+                if (exception.Message.Contains("BNS Error: The maximum number of ScheduledActions of this type has already been added."))
+                {
+                   // MessageBox.Show("You open the daemon has exceeded the hardware limitations");
+                }
+            }
+            catch (SchedulerServiceException)
+            {
+
+
+            }
+        }
+        private void StopPeriodicTask()
+        {
+            try
+            {
+                ScheduledActionService.Remove("PeriodicTaskDemo");
+              //  MessageBox.Show("Turn off the background agent successfully");
+            }
+            catch (InvalidOperationException exception)
+            {
+                if (exception.Message.Contains("doesn't exist"))
+                {
+                   // MessageBox.Show("Since then the background agent success is not running");
+                }
+            }
+            catch (SchedulerServiceException)
+            {
+
+
+            }
+        } 
+        public void startanimation()
+        {
+            StartPeriodicTask();
+            //SetData(); 
+            if(App.ViewModel.BackGround !=null)
+            {
+                Storyboard sbFadeIn = new Storyboard();
+                sbFadeIn.Completed += new EventHandler(sb_Completed);
+                FadeInOut(RootPanorama.Background, sbFadeIn, true);
+            }
+        }
+        public void SetData()
+        {
+            Mutex mutex = new Mutex(false, "ScheduledAgentData");
+            mutex.WaitOne();
+            IsolatedStorageSettings setting = IsolatedStorageSettings.ApplicationSettings;
+            if (!setting.Contains("ScheduledAgentData"))
+            {
+                setting.Add("ScheduledAgentData", "Foreground data");
+            }
+            mutex.ReleaseMutex();
+        } 
+        public void FadeInOut(DependencyObject target, Storyboard sb, bool isFadeIn)
+        {
+            Duration d = new Duration(TimeSpan.FromMilliseconds(2000));
+            DoubleAnimation daFade = new DoubleAnimation();
+            daFade.Duration = d;
+            if (isFadeIn)
+            {
+                daFade.To = 0.4;
+            }
+            else
+            {
+                daFade.From = 0.1;
+                daFade.To = 0.4;
+            }
+
+            sb.Duration = d;
+            sb.Children.Add(daFade);
+            Storyboard.SetTarget(daFade, target);
+            Storyboard.SetTargetProperty(daFade, new PropertyPath("Opacity"));
+            sb.Begin();
+        }
+        private void sb_Completed(object sender, EventArgs e)
+        {
+            BitmapImage bitmapImage = App.ViewModel.BackGround;
+            ImageBrush imageBrush = new ImageBrush()
+            {
+                Opacity = 0.3,
+                ImageSource = bitmapImage,
+                Stretch = Stretch.UniformToFill
+            };
+           
+            RootPanorama.Background = imageBrush;
+           // RootPanorama.Background.Opacity = 0.4d;
+            Storyboard sbFadeOut = new Storyboard();
+            FadeInOut(RootPanorama.Background, sbFadeOut, false);
+        }
+
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
             base.OnBackKeyPress(e);
@@ -97,7 +213,7 @@ namespace FreeApp
                 App.listAds.Clear();
                 string html = "";
                 var client = new HttpClient();
-                html = await client.GetStringAsync("http://lucstudio.com/Ads.xml");
+                html = await client.GetStringAsync("http://xinh.link/Ads.xml");
                 MatchCollection Resultss = Regex.Matches(html.ToString(), "<App>(.*)");
                 foreach (Match result in Resultss)
                 {
@@ -105,25 +221,45 @@ namespace FreeApp
                     string _name = UIHelper.GetTxtBtwn(result.ToString(), "<name>", "</name>", 0);
                     string _image = UIHelper.GetTxtBtwn(result.ToString(), "<image>", "</image>", 0);
                     string _version = UIHelper.GetTxtBtwn(result.ToString(), "<message>", "</message", 0);
-                    App.listAds.Add(new Ads() { Image = _image, Message = _version, Title = _name, Url = _url });
+                    string _banner = UIHelper.GetTxtBtwn(result.ToString(), "<banner>", "</banner", 0);
+                    string _id = UIHelper.GetTxtBtwn(result.ToString(), "<id>", "</id", 0);
+                    MessageBox.Show(_id);
+                    App.listAds.Add(new Ads() { Image = _image, Message = _version, Title = _name, Url = _url , Banner = _banner, Id = _id});
                 }
             }
             catch
             { }
+            if (App.listAds.Count > 0)
+            {
+                App.ViewModel.AdsTitle = App.listAds[0].Title;
+                App.ViewModel.AdsId = App.listAds[0].Id;
+                App.ViewModel.AdsBackGround = new BitmapImage(new Uri(App.listAds[0].Image, UriKind.RelativeOrAbsolute));
+                IsolatedStorageHelper.SavePrimitive<string>("AdsBackGround", App.listAds[0].Image);
+                IsolatedStorageHelper.SavePrimitive<string>("AdsTitle", App.listAds[0].Title);
+                IsolatedStorageHelper.SavePrimitive<string>("AdsId", App.listAds[0].Id);
+               // MessageBox.Show(App.listAds[0].Id)
+            }
         }
         private void toasts_Tap(object sender, System.Windows.Input.GestureEventArgs e)
         {
-            WebBrowserTask webBrowserTask = new WebBrowserTask();
+            //WebBrowserTask webBrowserTask = new WebBrowserTask();
 
-            webBrowserTask.Uri = new Uri(App.listAds[this.flag - 1].Url, UriKind.Absolute);
+            //webBrowserTask.Uri = new Uri(App.listAds[this.flag - 1].Url, UriKind.Absolute);
 
-            webBrowserTask.Show();
+            //webBrowserTask.Show();
+            MessageBox.Show(App.listAds[this.flag - 1].Id);
+            new MarketplaceDetailTask()
+            {
+                ContentIdentifier = App.listAds[this.flag - 1].Id
+            }.Show();
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
 
             try
             {
+                GoogleAnalytics.EasyTracker.GetTracker().SendView("main");
+                startanimation();
                 App.ViewModel.LoadData();
                 App.ViewModel.Mess = "welcome back!";
                 App.ViewModel.LoadFilmHot(this.Ca);
@@ -150,7 +286,7 @@ namespace FreeApp
 
         private void history_Btn_Click(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new Uri("/Chat.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri("/VideoPage.xaml?name=" + HttpUtility.UrlEncode(App.ViewModel.CerrentTitle) + "&url=" + HttpUtility.UrlEncode(App.ViewModel.CerrentUrl) + "&avatar=" + HttpUtility.UrlEncode(IsolatedStorageHelper.GetPrimitive<string>("BackGround")), UriKind.Relative));
         }
 
         private void down_Btn_Click(object sender, RoutedEventArgs e)
@@ -318,6 +454,28 @@ namespace FreeApp
             return;
         }
 
+        private void Image_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            
+        }
+
+        private void ads_Click(object sender, RoutedEventArgs e)
+        {
+          // MessageBox.Show (IsolatedStorageHelper.GetPrimitive<string>("AdsId"));
+            if (IsolatedStorageHelper.GetPrimitive<string>("AdsId")!= null)
+            {
+                new MarketplaceDetailTask()
+                {
+                    
+                    ContentIdentifier = IsolatedStorageHelper.GetPrimitive<string>("AdsId")
+                }.Show();
+            }
+            else
+            {
+
+            }
+        }
+
     }
     public class Ads
     {
@@ -325,5 +483,7 @@ namespace FreeApp
         public string Image { get; set; }
         public string Url { get; set; }
         public string Message { get; set; }
+        public string Banner { get; set; }
+        public string Id { get; set; }
     }
 }

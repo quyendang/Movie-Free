@@ -22,6 +22,7 @@ using System.Windows.Media;
 using Windows.Storage;
 using Windows.Networking.BackgroundTransfer;
 using Microsoft.Phone.Tasks;
+using System.Windows.Media.Animation;
 
 namespace FreeApp
 {
@@ -40,6 +41,7 @@ namespace FreeApp
             strategyDefinition.Orientation = System.Windows.Controls.Orientation.Horizontal;
             this.MovieListBox.VirtualizationStrategyDefinition = (VirtualizationStrategyDefinition)strategyDefinition;
         }
+        
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             try
@@ -48,6 +50,8 @@ namespace FreeApp
                 {
                     NavigationContext.QueryString.TryGetValue("url", out _urlPage);
                     NavigationContext.QueryString.TryGetValue("avatar", out _avatar);
+                    IsolatedStorageHelper.SavePrimitive<string>("CerrentTitle", _namePage);
+                    IsolatedStorageHelper.SavePrimitive<string>("CerrentUrl", _urlPage);
                     this.MovieName.Text = HttpUtility.UrlDecode(this._namePage);
                     this.coverImage.ImageSource = new BitmapImage(new Uri(HttpUtility.UrlDecode(this._avatar), UriKind.RelativeOrAbsolute));
                     GetEpisodes(_urlPage);
@@ -70,6 +74,19 @@ namespace FreeApp
                 {
                     html = await client.GetStringAsync("http://www.phimmoi.net/" + Url + "xem-phim.html");
                     this._stream = UIHelper.GetTxtBtwn(html.ToString(), "currentEpisode.url='", "';", 0);
+
+                    string posterImage = UIHelper.GetTxtBtwn(UIHelper.GetTxtBtwn(html.ToString(), "<meta property=\"og:image\" content=\"", "/>", 0), "&url=", "\"", 0);
+                   // MessageBox.Show(posterImage);
+                    IsolatedStorageHelper.SavePrimitive<string>("BackGround", posterImage);
+                    App.ViewModel.CerrentTitle = _namePage;
+                    App.ViewModel.CerrentUrl = _urlPage;
+                    App.ViewModel.BackGround = new BitmapImage(new Uri(posterImage, UriKind.RelativeOrAbsolute));
+                    ImageBrush brush = new ImageBrush
+                    {
+                        ImageSource = new System.Windows.Media.Imaging.BitmapImage(new Uri(posterImage, UriKind.RelativeOrAbsolute)),
+                        Opacity = 0.5d
+                    };
+                    App.ViewModel.RootBackGround = brush;
                     string episodeJson = UIHelper.GetTxtBtwn(html, "episodeJson", "</script>", 0);
                     episodeJson = episodeJson.Replace("{\"episodeId", "\n\n{\"episodeId");
                     MatchCollection Results = Regex.Matches(episodeJson, "episodeId(.*)\n");

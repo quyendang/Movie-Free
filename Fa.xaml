@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives" 
     xmlns:telerikInput="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Input" 
+    xmlns:telerikCore="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Core"
     xmlns:Progress="clr-namespace:FreeApp.View"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -48,15 +49,14 @@
             <!--<TextBlock Name="ketTxt" FontSize="30" FontWeight="Bold" Grid.Column="1"/>-->
         </Grid>
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,80">
-            <telerikPrimitives:RadDataBoundListBox ItemsSource="{Binding Like}" ItemTap="MovieListBox_ItemTap"  x:Name="MovieListBox" DataVirtualizationMode="OnDemandAutomatic" ItemTemplate="{StaticResource DataTemplate1}" EmptyContent="no video avalible">
-                <telerikPrimitives:RadDataBoundListBox.ItemLoadingTemplate>
-                    <DataTemplate>
-                        <StackPanel MinHeight="14" Orientation="Horizontal">
-                            <TextBlock Text="loading" FontSize="16"></TextBlock>
-                            <telerikPrimitives:RadBusyIndicator Height="14" Width="420" AnimationStyle="AnimationStyle9"  IsRunning="True" Content=""/>
-                        </StackPanel>
-                    </DataTemplate>
-                </telerikPrimitives:RadDataBoundListBox.ItemLoadingTemplate>
+            <telerikPrimitives:RadDataBoundListBox ItemsSource="{Binding Like}" ItemTap="MovieListBox_ItemTap"  x:Name="MovieListBox" ItemTemplate="{StaticResource DataTemplate1}" EmptyContent="no video avalible">
+                <telerikPrimitives:RadDataBoundListBox.ItemAddedAnimation>
+                    <telerikCore:RadScaleAndFadeAnimation Duration="0:0:2">
+                        <telerikCore:RadScaleAndFadeAnimation.Easing>
+                            <CircleEase EasingMode="EaseIn"/>
+                        </telerikCore:RadScaleAndFadeAnimation.Easing>
+                    </telerikCore:RadScaleAndFadeAnimation>
+                </telerikPrimitives:RadDataBoundListBox.ItemAddedAnimation>
             </telerikPrimitives:RadDataBoundListBox>
         </Grid>
         <Progress:ProgressRing IsActive="{Binding IsLoading}" HorizontalAlignment="Center" Height="100" Width="100" Foreground="{StaticResource PhoneAccentBrush}" Margin="186,304,194,296" Grid.Row="1"/>

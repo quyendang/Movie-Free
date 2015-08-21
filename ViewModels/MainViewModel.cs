@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using HtmlAgilityPack;
 using System.Net;
 using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 
 namespace FreeApp.ViewModels
 {
@@ -473,6 +474,7 @@ namespace FreeApp.ViewModels
                 var nodes = htmlDocument.DocumentNode.SelectNodes("//li[starts-with(@class, 'movie-item')]");
                 foreach (var div in nodes)
                 {
+                    
                     string lenght = div.SelectSingleNode(".//span[@class='movie-title-chap']").InnerText.Trim();
                     string thumbnail = div.SelectSingleNode(".//div[@class='movie-thumbnail']").Attributes["style"].Value.Replace("background:url(", "").Replace("); background-size: cover;", "");
                     string link = div.SelectSingleNode(".//a[@class='block-wrapper']").Attributes["href"].Value;
@@ -493,6 +495,7 @@ namespace FreeApp.ViewModels
                     }
 
                 }
+                
             }
             catch
             {
@@ -519,6 +522,7 @@ namespace FreeApp.ViewModels
                 var nodes = htmlDocument.DocumentNode.SelectNodes("//li[starts-with(@class, 'movie-item')]");
                 foreach (var div in nodes)
                 {
+                    IsolatedStorageHelper.SavePrimitive<string>("LastMovie", (HotItems.Count == 0) ? div.SelectSingleNode(".//span[@class='movie-title-2']").InnerText.Trim() : IsolatedStorageHelper.GetPrimitive<string>("LastMovie"));
                     string lenght = div.SelectSingleNode(".//span[@class='movie-title-chap']").InnerText.Trim();
                     string thumbnail = div.SelectSingleNode(".//div[@class='movie-thumbnail']").Attributes["style"].Value.Replace("background:url(", "").Replace("); background-size: cover;", "");
                     string link = div.SelectSingleNode(".//a[@class='block-wrapper']").Attributes["href"].Value;
@@ -707,6 +711,97 @@ namespace FreeApp.ViewModels
                     _sampleProperty = value;
                     NotifyPropertyChanged("SampleProperty");
                 }
+            }
+        }
+        private BitmapImage bg = null;
+        public BitmapImage BackGround
+        {
+            get
+            {
+                return bg;
+            }
+            set
+            {
+                bg = value;
+                NotifyPropertyChanged("BackGround");
+            }
+        }
+        private BitmapImage bg2 = null;
+        public BitmapImage AdsBackGround
+        {
+            get
+            {
+                return bg2;
+            }
+            set
+            {
+                bg2 = value;
+                NotifyPropertyChanged("AdsBackGround");
+            }
+        }
+        private string titleads = null;
+        public string AdsTitle
+        {
+            get
+            {
+                return titleads;
+            }
+            set
+            {
+                titleads = value;
+                NotifyPropertyChanged("AdsTitle");
+            }
+        }
+        public string idads = null;
+        public string AdsId
+        {
+            get
+            {
+                return idads;
+            }
+            set
+            {
+                idads = value;
+                NotifyPropertyChanged("AdsId");
+            }
+        }
+        private string crtitle = null;
+        public string CerrentTitle
+        {
+            get
+            {
+                return crtitle;
+            }
+            set
+            {
+                crtitle = value;
+                NotifyPropertyChanged("CerrentTitle");
+            }
+        }
+        private string crUrl = null;
+        public string CerrentUrl
+        {
+            get
+            {
+                return crUrl;
+            }
+            set
+            {
+                crUrl = value;
+                NotifyPropertyChanged("CerrentUrl");
+            }
+        }
+        private ImageBrush rootbg = null;
+        public ImageBrush RootBackGround
+        {
+            get
+            {
+                return rootbg;
+            }
+            set
+            {
+                rootbg = value;
+                NotifyPropertyChanged("RootBackGround");
             }
         }
         private bool _isLoading = false;

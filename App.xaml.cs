@@ -10,20 +10,21 @@ using FreeApp.Resources;
 using FreeApp.ViewModels;
 using System.Collections.Generic;
 using FreeApp.Utils;
-using FreeApp.Connect;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace FreeApp
 {
     public partial class App : Application
     {
         private static MainViewModel viewModel = null;
-        public static SocketConnect sk = (SocketConnect)null;
         public static bool NeedReview;
         public static List<string> list = new List<string>();
         public static string mess;
         public static string url;
         public static string title;
         public static List<Ads> listAds = new List<Ads>();
+
         /// <summary>
         /// A static ViewModel used by the views to bind against.
         /// </summary>
@@ -39,6 +40,7 @@ namespace FreeApp
                 return viewModel;
             }
         }
+        
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
@@ -50,7 +52,6 @@ namespace FreeApp
         /// </summary>
         public App()
         {
-            App.sk = new SocketConnect();
             NeedReview = IsolatedStorageHelper.GetPrimitive<bool>("NeedReview");
             if (!IsolatedStorageHelper.ContainsKey("NeedReview"))
             {
@@ -100,6 +101,60 @@ namespace FreeApp
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            try
+            {
+                App.ViewModel.BackGround = new BitmapImage(new Uri(IsolatedStorageHelper.GetPrimitive<string>("BackGround"), UriKind.RelativeOrAbsolute));
+                App.ViewModel.AdsBackGround = new BitmapImage(new Uri(IsolatedStorageHelper.GetPrimitive<string>("AdsBackGround"), UriKind.RelativeOrAbsolute));
+                App.ViewModel.AdsId = IsolatedStorageHelper.GetPrimitive<string>("AdsId");
+                App.ViewModel.AdsTitle = IsolatedStorageHelper.GetPrimitive<string>("AdsTitle");
+                if (!IsolatedStorageHelper.ContainsKey("BackGround"))
+                {
+                    IsolatedStorageHelper.SavePrimitive<string>("BackGround", null);
+                }
+                else { }
+                if (!IsolatedStorageHelper.ContainsKey("AdsBackGround"))
+                {
+                    IsolatedStorageHelper.SavePrimitive<string>("AdsBackGround", null);
+                }
+                else { }
+                if (!IsolatedStorageHelper.ContainsKey("AdsId"))
+                {
+                    IsolatedStorageHelper.SavePrimitive<string>("AdsId", null);
+                }
+                else { }
+                if (!IsolatedStorageHelper.ContainsKey("AdsTitle"))
+                {
+                    IsolatedStorageHelper.SavePrimitive<string>("AdsTitle", null);
+                }
+                else { }
+                if (!IsolatedStorageHelper.ContainsKey("LastMovie"))
+                {
+                    IsolatedStorageHelper.SavePrimitive<string>("LastMovie", null);
+                }
+                else { }
+                App.ViewModel.CerrentTitle = IsolatedStorageHelper.GetPrimitive<string>("CerrentTitle");
+                if (!IsolatedStorageHelper.ContainsKey("CerrentTitle"))
+                {
+                    IsolatedStorageHelper.SavePrimitive<string>("CerrentTitle", null);
+                }
+                else { }
+                App.ViewModel.CerrentUrl = IsolatedStorageHelper.GetPrimitive<string>("CerrentUrl");
+                if (!IsolatedStorageHelper.ContainsKey("CerrentUrl"))
+                {
+                    IsolatedStorageHelper.SavePrimitive<string>("CerrentUrl", null);
+                }
+                else { }
+                if(App.ViewModel.BackGround != null)
+                {
+                    ImageBrush brush = new ImageBrush
+                    {
+                        ImageSource = new System.Windows.Media.Imaging.BitmapImage(new Uri(IsolatedStorageHelper.GetPrimitive<string>("BackGround"), UriKind.RelativeOrAbsolute)),
+                        Opacity = 0.5d
+                    };
+                    App.ViewModel.RootBackGround = brush;
+                }
+            }
+            catch { }
         }
 
         // Code to execute when the application is activated (brought to foreground)
@@ -153,7 +208,7 @@ namespace FreeApp
 
             // Create the frame but don't set it as RootVisual yet; this allows the splash
             // screen to remain active until the application is ready to render.
-            RootFrame = new PhoneApplicationFrame();
+            RootFrame = new TransitionFrame();
             RootFrame.Navigated += CompleteInitializePhoneApplication;
 
             // Handle navigation failures

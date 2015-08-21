@@ -12,6 +12,9 @@ using FreeApp.ViewModels;
 using Telerik.Windows.Controls;
 using Microsoft.Phone.Tasks;
 using FreeApp.Utils;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace FreeApp
 {
@@ -31,10 +34,54 @@ namespace FreeApp
             this.MovieListBox.VirtualizationStrategyDefinition = (VirtualizationStrategyDefinition)strategyDefinition;
             this.listparkCountryCategories2.ItemsSource = (IEnumerable)App.ViewModel.ReleasedCountry;
         }
+        public void startanimation()
+        {
+            // MessageBox.Show("i");
+            Storyboard sbFadeIn = new Storyboard();
+            sbFadeIn.Completed += new EventHandler(sb_Completed);
+            FadeInOut(LayoutRoot.Background, sbFadeIn, true);
+        }
+        public void FadeInOut(DependencyObject target, Storyboard sb, bool isFadeIn)
+        {
+            Duration d = new Duration(TimeSpan.FromMilliseconds(2000));
+            DoubleAnimation daFade = new DoubleAnimation();
+            daFade.Duration = d;
+            if (isFadeIn)
+            {
+                daFade.To = 0.4;
+            }
+            else
+            {
+                daFade.From = 0.1;
+                daFade.To = 0.4;
+            }
+
+            sb.Duration = d;
+            sb.Children.Add(daFade);
+            Storyboard.SetTarget(daFade, target);
+            Storyboard.SetTargetProperty(daFade, new PropertyPath("Opacity"));
+            sb.Begin();
+        }
+        private void sb_Completed(object sender, EventArgs e)
+        {
+            BitmapImage bitmapImage = App.ViewModel.BackGround;
+            ImageBrush imageBrush = new ImageBrush()
+            {
+                Opacity = 0.3,
+                ImageSource = bitmapImage,
+                Stretch = Stretch.UniformToFill
+            };
+
+            LayoutRoot.Background = imageBrush;
+            // RootPanorama.Background.Opacity = 0.4d;
+            Storyboard sbFadeOut = new Storyboard();
+            FadeInOut(LayoutRoot.Background, sbFadeOut, false);
+        }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             try
             {
+                //startanimation();
                 if (NavigationContext.QueryString.TryGetValue("name", out _namePage))
                 {
                     NavigationContext.QueryString.TryGetValue("url", out _urlPage);

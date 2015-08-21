@@ -10,6 +10,9 @@
     xmlns:telerikPrimitives="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Primitives" 
     xmlns:telerikInput="clr-namespace:Telerik.Windows.Controls;assembly=Telerik.Windows.Controls.Input" 
     xmlns:Progress="clr-namespace:FreeApp.View"
+    xmlns:local="clr-namespace:FreeApp"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:c4fBinding="clr-namespace:Coding4Fun.Toolkit.Controls.Binding;assembly=Coding4Fun.Toolkit.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -18,7 +21,7 @@
     shell:SystemTray.IsVisible="False">
     <phone:PhoneApplicationPage.Resources>
         <DataTemplate x:Key="DataTemplate1">
-            <Grid Height="170" Width="150" Background="Transparent" Margin="0,0,20,20">
+            <Grid toolkit:TiltEffect.IsTiltEnabled="True" Height="170" Width="150" Background="Transparent" Margin="0,0,20,20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="145"/>
                     <RowDefinition Height="20"/>
@@ -44,7 +47,7 @@
         </DataTemplate>
         <DataTemplate x:Key="DataTemplate3">
             <Grid>
-                <TextBlock Text="{Binding Title}" HorizontalAlignment="Left" VerticalAlignment="Top"  FontWeight="Bold" FontSize="25"/>
+                <TextBlock Text="{Binding Title}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{StaticResource PhoneAccentBrush}"  FontWeight="Bold" FontSize="70"/>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="DataTemplate4">
@@ -138,62 +141,109 @@
             </Setter>
         </Style>
     </phone:PhoneApplicationPage.Resources>
+    <toolkit:TransitionService.NavigationInTransition>
+        <toolkit:NavigationInTransition>
+            <toolkit:NavigationInTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideLeftFadeIn" />
+            </toolkit:NavigationInTransition.Backward>
+            <toolkit:NavigationInTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideLeftFadeIn" />
+            </toolkit:NavigationInTransition.Forward>
+        </toolkit:NavigationInTransition>
+    </toolkit:TransitionService.NavigationInTransition>
+    <toolkit:TransitionService.NavigationOutTransition>
+        <toolkit:NavigationOutTransition>
+            <toolkit:NavigationOutTransition.Backward>
+                <toolkit:SlideTransition Mode="SlideUpFadeOut" />
+            </toolkit:NavigationOutTransition.Backward>
+            <toolkit:NavigationOutTransition.Forward>
+                <toolkit:SlideTransition Mode="SlideUpFadeOut" />
+            </toolkit:NavigationOutTransition.Forward>
+        </toolkit:NavigationOutTransition>
+    </toolkit:TransitionService.NavigationOutTransition>
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot">
-        <phone:Panorama >
-            <!--<phone:Panorama.Background>
-                <ImageBrush ImageSource="/Image/Background1.jpg"/>
-            </phone:Panorama.Background>-->
-            <phone:Panorama.HeaderTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" FontSize="36" FontFamily="Segoe WP Black"/>
-                </DataTemplate>
-            </phone:Panorama.HeaderTemplate>
+        <!--<Grid.Background>
+            <ImageBrush ImageSource="{Binding RootBackGround}"/>
+        </Grid.Background>-->
+        <phone:Panorama Name="RootPanorama" >
+            <phone:Panorama.Background>
+                <ImageBrush Opacity="0.3" ImageSource="{Binding}"/>
+            </phone:Panorama.Background>
             <phone:PanoramaItem Header="HOME">
-                <ScrollViewer>
-                    <Grid Margin="0,0,0,80">
-                        <Button Content="Hot Cinema" Click="hotClick" Style="{StaticResource ButtonStyleMenuMovieBtn}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <Button  Content="Tv Series" Style="{StaticResource ButtonStyleMenuTVBtn}" Click="tv_Btn_Click"  Margin="185,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <Button Content="Favorites" Click="favoriteBtn_Click" Style="{StaticResource ButtonStyleMenuFavBtn}" Margin="0,185,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <Button Content="Chat/Feedback" Click="history_Btn_Click" Style="{StaticResource ButtonStyleMenuHisBtn}"  Margin="185,185,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <Button Content="Downloading" Style="{StaticResource ButtonStyleMenuDownBtn}" Click="down_Btn_Click"  Margin="0,370,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <Button Content="Saved Movies" Click="downloadPage_Click" Style="{StaticResource ButtonStyleMenuoffBtn}" Margin="185,370,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    </Grid>
+                <phone:PanoramaItem.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontSize="36" FontFamily="Segoe WP Black"/>
+                    </DataTemplate>
+                </phone:PanoramaItem.HeaderTemplate>
+                <ScrollViewer Margin="0,0,0,40">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="4*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="230"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="110"/>
+                                <RowDefinition Height="180"/>
+                            </Grid.RowDefinitions>
+                            <Button local:TiltEffect.IsTiltEnabled="True" Margin="0" Click="history_Btn_Click" Style="{StaticResource ButtonStyleMenuHisBtn}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                            <Button local:TiltEffect.IsTiltEnabled="True" Margin="0,10,0,0" Grid.Row="1" Content="favorites" Click="favoriteBtn_Click" Style="{StaticResource ButtonStyleMenuFavBtn}" HorizontalAlignment="Right" VerticalAlignment="Top" FontFamily="Segoe WP Light"/>
+                            <Button local:TiltEffect.IsTiltEnabled="True" Margin="0,10,0,0" Grid.Row="2" Click="downloadPage_Click" Style="{StaticResource ButtonStyleMenuoffBtn}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                            <Button local:TiltEffect.IsTiltEnabled="True" Visibility="Collapsed" Margin="0,10,0,0" Click="ads_Click" Grid.Row="3" Style="{StaticResource ButtonStyleMenuAdsBtn}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="110"/>
+                                <RowDefinition Height="183"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Button local:TiltEffect.IsTiltEnabled="True" Grid.Row="0" Style="{StaticResource ButtonStyleMenuDownBtn}" Click="down_Btn_Click"  Margin="10,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <Button local:TiltEffect.IsTiltEnabled="True" Grid.Row="1" Margin="10,10,0,0" Content="new movies!" Click="hotClick" Style="{StaticResource ButtonStyleMenuMovieBtn}" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Segoe WP Light"/>
+                            <Button local:TiltEffect.IsTiltEnabled="True" Grid.Row="2" Margin="10,10,0,0" Style="{StaticResource ButtonStyleMenuSearchBtn}" Click="Search_Click"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <Button local:TiltEffect.IsTiltEnabled="True" Grid.Row="3" Margin="10,10,0,0" Content="tv Series" Style="{StaticResource ButtonStyleMenuTVBtn}" Click="tv_Btn_Click" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Segoe WP Light"/>
+                            <Button Content="rate" local:TiltEffect.IsTiltEnabled="True" Grid.Row="4" Margin="10,10,0,0" Style="{StaticResource ButtonStyleRateBtn}" Click="ApplicationBarMenuItem_Click_1" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        </Grid>
 
+                    </Grid>
                 </ScrollViewer>
             </phone:PanoramaItem>
             <phone:PanoramaItem Orientation="Horizontal" Header="HOT MOVIE">
-                <Grid>
+                <phone:PanoramaItem.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontSize="36" FontFamily="Segoe WP Black"/>
+                    </DataTemplate>
+                </phone:PanoramaItem.HeaderTemplate>
+                <Grid Margin="0,-100,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <telerikInput:RadListPicker Grid.Column="0" Margin="0,0,0,0" x:Name="listparkCountryCategories" VerticalAlignment="Stretch"  Background="{x:Null}" BorderBrush="{x:Null}" ItemTemplate="{StaticResource DataTemplate3}" PopupItemTemplate="{StaticResource DataTemplate4}" InlineModeThreshold="1"  FontSize="40" SelectionChanged="listparkCountryCategories_SelectionChanged" Template="{StaticResource listpacktemp}" />
-                        <Border Grid.Column="1" BorderThickness="0,2,0,0" BorderBrush="{StaticResource PhoneBorderBrush}" Margin="0,40,0,0"/>
+                        <telerikInput:RadListPicker Margin="252,0,0,0" x:Name="listparkCountryCategories" VerticalAlignment="Top"  Background="{x:Null}" BorderBrush="{x:Null}" ItemTemplate="{StaticResource DataTemplate3}" PopupItemTemplate="{StaticResource DataTemplate4}" InlineModeThreshold="1"  FontSize="30" SelectionChanged="listparkCountryCategories_SelectionChanged" Template="{StaticResource listpacktemp}" HorizontalAlignment="Left" />
                     </Grid>
-                    <telerikPrimitives:RadDataBoundListBox Grid.Row="1" Width="680"  Margin="0,0,0,0" ItemTap="MovieListBox_ItemTap" DataVirtualizationItemTemplate="{StaticResource DataTemplate2}" ItemsSource="{Binding HotItems}" x:Name="MovieListBox" DataVirtualizationMode="OnDemandManual" ItemTemplate="{StaticResource DataTemplate1}" EmptyContent="No movie avalible!"/>
+                    <telerikPrimitives:RadDataBoundListBox Grid.Row="1" Width="680"  Margin="0,0,0,30" ItemTap="MovieListBox_ItemTap" DataVirtualizationItemTemplate="{StaticResource DataTemplate2}" ItemsSource="{Binding HotItems}" x:Name="MovieListBox" DataVirtualizationMode="OnDemandManual" ItemTemplate="{StaticResource DataTemplate1}" EmptyContent="No movie avalible!"/>
                 </Grid>
             </phone:PanoramaItem>
             <phone:PanoramaItem Orientation="Horizontal" Header="NEW TV SERIES">
-                <Grid>
+                <phone:PanoramaItem.HeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontSize="36" FontFamily="Segoe WP Black"/>
+                    </DataTemplate>
+                </phone:PanoramaItem.HeaderTemplate>
+                <Grid Margin="0,-100,0,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <telerikInput:RadListPicker Grid.Column="0" Margin="0,0,0,0" x:Name="listparkCountryCategories2" VerticalAlignment="Stretch"  Background="{x:Null}" BorderBrush="{x:Null}" ItemTemplate="{StaticResource DataTemplate3}" PopupItemTemplate="{StaticResource DataTemplate4}" InlineModeThreshold="1"  FontSize="40" SelectionChanged="listparkCountryCategories2_SelectionChanged" Template="{StaticResource listpacktemp}" />
-                        <Border Grid.Column="1" BorderThickness="0,2,0,0" BorderBrush="{StaticResource PhoneBorderBrush}" Margin="0,40,0,0"/>
+                        <telerikInput:RadListPicker Margin="300,0,0,0" x:Name="listparkCountryCategories2" VerticalAlignment="Stretch"  Background="{x:Null}" BorderBrush="{x:Null}" ItemTemplate="{StaticResource DataTemplate3}" PopupItemTemplate="{StaticResource DataTemplate4}" InlineModeThreshold="1"  FontSize="40" SelectionChanged="listparkCountryCategories2_SelectionChanged" Template="{StaticResource listpacktemp}" />
                     </Grid>
-                    <telerikPrimitives:RadDataBoundListBox Grid.Row="1" Width="510"  Margin="0,0,0,0" ItemTap="TVListBox_ItemTap" DataVirtualizationItemTemplate="{StaticResource DataTemplate5}" ItemsSource="{Binding TVItems}" x:Name="TVListBox" DataVirtualizationMode="OnDemandManual" ItemTemplate="{StaticResource DataTemplate1}" EmptyContent="No movie avalible!"/>
+                    <telerikPrimitives:RadDataBoundListBox Grid.Row="1" Width="510"  Margin="0,0,0,30" ItemTap="TVListBox_ItemTap" DataVirtualizationItemTemplate="{StaticResource DataTemplate5}" ItemsSource="{Binding TVItems}" x:Name="TVListBox" DataVirtualizationMode="OnDemandManual" ItemTemplate="{StaticResource DataTemplate1}" EmptyContent="No movie avalible!"/>
                 </Grid>
             </phone:PanoramaItem>
             <phone:PanoramaItem Header="CATEGORY">
@@ -253,13 +303,13 @@
                 </ScrollViewer>
             </phone:PanoramaItem>
         </phone:Panorama>
-        <Progress:ProgressRing IsActive="{Binding IsLoading}" HorizontalAlignment="Center" Height="100" Width="100" Foreground="{StaticResource PhoneAccentBrush}"/>
+        <Progress:ProgressRing IsActive="{Binding IsLoading}" HorizontalAlignment="Center" Height="50" Width="50" Foreground="{StaticResource PhoneAccentBrush}"/>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar BackgroundColor="Transparent" IsVisible="True" IsMenuEnabled="True">
-            <shell:ApplicationBarIconButton IconUri="/Assets/feature.search.png" Click="Search_Click" Text="search"/>
+        <shell:ApplicationBar BackgroundColor="#1aba9a" Opacity="0.6" Mode="Minimized" IsVisible="True" IsMenuEnabled="True">
+            <!--<shell:ApplicationBarIconButton IconUri="/Assets/feature.search.png" Click="Search_Click" Text="search"/>-->
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="report porblem" Click="ApplicationBarMenuItem_Click"/>
+                <shell:ApplicationBarMenuItem  Text="report porblem" Click="ApplicationBarMenuItem_Click"/>
                 <shell:ApplicationBarMenuItem Text="rate 5 star" Click="ApplicationBarMenuItem_Click_1"/>
                 <shell:ApplicationBarMenuItem Text="share" Click="ApplicationBarMenuItem_Click_2"/>
                 <shell:ApplicationBarMenuItem Text="about" Click="ApplicationBarMenuItem_Click_3"/>
